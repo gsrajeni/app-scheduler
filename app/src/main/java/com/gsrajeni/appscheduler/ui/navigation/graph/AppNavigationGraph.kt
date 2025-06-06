@@ -5,9 +5,11 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.toRoute
 import com.gsrajeni.appscheduler.ui.navigation.LocalNavHostController
 import com.gsrajeni.appscheduler.ui.screens.add_schedule.AddScheduleScreen
 import com.gsrajeni.appscheduler.ui.screens.dashboard.DashboardScreen
+import com.gsrajeni.appscheduler.ui.screens.edit_schedule.EditScheduleScreen
 import com.gsrajeni.appscheduler.ui.screens.schedule_logs.ScheduleLogsScreen
 import com.gsrajeni.appscheduler.ui.screens.splash.SplashScreen
 
@@ -35,8 +37,13 @@ fun NavGraphBuilder.navigationGraph() {
     composable<AppRoute.DashboardRoute> {
         DashboardScreen()
     }
-    composable<AppRoute.AddScheduleRoute> {
+    composable<AppRoute.AddScheduleRoute> { backStackEntry ->
         AddScheduleScreen()
+    }
+
+    composable<AppRoute.EditScheduleRoute> { backStackEntry ->
+        val app = backStackEntry.toRoute<AppRoute.EditScheduleRoute>()
+        EditScheduleScreen(id = app.scheduleId)
     }
     composable<AppRoute.ScheduleLogRoute> {
         ScheduleLogsScreen()

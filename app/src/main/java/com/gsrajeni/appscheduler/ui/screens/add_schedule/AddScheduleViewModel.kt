@@ -26,7 +26,6 @@ class AddScheduleViewModel @Inject constructor(
     val installedAppList = _installedAppList.asStateFlow()
     val _isScheduleCreated = MutableStateFlow(false)
     val isScheduleCreated = _isScheduleCreated.asStateFlow()
-
     init {
         loadApp()
     }

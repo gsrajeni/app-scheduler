@@ -36,9 +36,7 @@ import com.gsrajeni.appscheduler.data.model.AppInfo
 import com.gsrajeni.appscheduler.ui.components.DefaultAppBar
 import com.gsrajeni.appscheduler.ui.navigation.LocalNavHostController
 import com.gsrajeni.appscheduler.ui.screens.add_schedule.components.app_picker.AppPicker
-import com.gsrajeni.appscheduler.ui.utils.currentActivity
 import java.util.Calendar
-import java.util.Date
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -77,7 +75,7 @@ fun AddScheduleScreen(modifier: Modifier = Modifier) {
         )
     }) {
         Column(
-            modifier = Modifier
+            modifier = modifier
                 .padding(it)
                 .padding(16.dp)
                 .verticalScroll(rememberScrollState()),

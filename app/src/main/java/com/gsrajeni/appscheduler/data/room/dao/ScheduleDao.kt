@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
+import androidx.room.Update
 import com.gsrajeni.appscheduler.data.model.ScheduledApp
 import kotlinx.coroutines.flow.Flow
 
@@ -17,4 +18,11 @@ interface ScheduleDao {
 
     @Delete
     fun delete(user: ScheduledApp)
+
+
+    @Query("SELECT * FROM app_schedules WHERE id = :id")
+    fun getSchedule(id: Int?): Flow<ScheduledApp?>
+
+    @Update
+    fun updateSchedule(app: ScheduledApp)
 }

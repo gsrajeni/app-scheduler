@@ -1,12 +1,13 @@
 package com.gsrajeni.appscheduler.ui.screens.dashboard
 
 import AppRoute
-import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -20,14 +21,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gsrajeni.appscheduler.data.model.ScheduledApp
 import com.gsrajeni.appscheduler.ui.components.DefaultAppBar
 import com.gsrajeni.appscheduler.ui.components.DefaultConfirmationDialog
+import com.gsrajeni.appscheduler.ui.components.EmptyContent
 import com.gsrajeni.appscheduler.ui.navigation.LocalNavHostController
 import com.gsrajeni.appscheduler.ui.screens.dashboard.components.ScheduledAppCard
 
@@ -36,10 +38,10 @@ import com.gsrajeni.appscheduler.ui.screens.dashboard.components.ScheduledAppCar
 fun DashboardScreen(
     modifier: Modifier = Modifier, viewModel: DashboardViewModel = hiltViewModel()
 ) {
-    val scheduledAppList = viewModel.scheduledItems.collectAsStateWithLifecycle(initialValue = listOf())
+    val scheduledAppList =
+        viewModel.scheduledItems.collectAsStateWithLifecycle(initialValue = listOf())
     val navController = LocalNavHostController.current
     var scheduleToDelete: ScheduledApp? by remember { mutableStateOf(null) }
-    var showEditDialog by remember { mutableStateOf(false) }
     Scaffold(topBar = {
         DefaultAppBar(
             title = "App Scheduler", actions = {
@@ -62,17 +64,17 @@ fun DashboardScreen(
         Box(
             modifier = modifier
                 .padding(it)
-                .fillMaxSize()
+                .fillMaxSize(), contentAlignment = Alignment.Center
         ) {
-            LazyColumn {
-                items(scheduledAppList.value.size) {index->
-                    ScheduledAppCard(
-                        scheduledAppList.value[index],
-                        onEditClick = {
-                            showEditDialog = true
-                        }, onDeleteClick = {
-                            scheduleToDelete = scheduledAppList.value[index]
-                        })
+            if (scheduledAppList.value.isEmpty()) EmptyContent(modifier = Modifier.wrapContentSize())
+            else LazyColumn(modifier = Modifier.fillMaxSize(), contentPadding = PaddingValues(bottom = 64.dp)) {
+
+                items(scheduledAppList.value.size) { index ->
+                    ScheduledAppCard(scheduledAppList.value[index], onEditClick = {
+                        navController?.navigate(AppRoute.EditScheduleRoute(scheduledAppList.value[index].id))
+                    }, onDeleteClick = {
+                        scheduleToDelete = scheduledAppList.value[index]
+                    })
                 }
             }
         }
@@ -91,8 +93,7 @@ fun DashboardScreen(
                 },
                 onCancel = {
                     scheduleToDelete = null
-                }
-            )
+                })
         }
     }
 }

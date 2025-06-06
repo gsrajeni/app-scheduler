@@ -1,6 +1,7 @@
 package com.gsrajeni.appscheduler.data.sources
 import android.content.Context
 import android.content.Intent
+import androidx.compose.ui.util.fastFilter
 import com.gsrajeni.appscheduler.data.model.AppInfo
 
 class InstalledAppDataSource {
@@ -17,7 +18,8 @@ class InstalledAppDataSource {
                 val icon = it.loadIcon(packageManager)
                 AppInfo(appName, packageName, icon)
             }
-            return apps.sortedBy { it.name.lowercase() }
+            //Sorting the app, then removing myself from the list
+            return apps.sortedBy { it.name.lowercase() }.filter { it.packageName != context.packageName }
         }
         return listOf()
     }

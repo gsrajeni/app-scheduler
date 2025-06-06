@@ -12,6 +12,9 @@ sealed class AppRoute {
     object AddScheduleRoute : AppRoute()
 
     @Serializable
+    data class EditScheduleRoute(val scheduleId: Int? = null) : AppRoute()
+
+    @Serializable
     object ScheduleLogRoute : AppRoute()
 
 }
