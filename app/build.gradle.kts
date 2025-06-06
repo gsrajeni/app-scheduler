@@ -3,7 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
-    id("com.google.devtools.ksp") // Or id("kotlin-kapt") if you are still using kapt
+    id("com.google.devtools.ksp")
     id("com.google.dagger.hilt.android")
 }
 
@@ -64,6 +64,10 @@ dependencies {
     implementation(libs.androidx.hilt.navigation.compose)
     // Hilt Dependencies
     implementation(libs.hilt.android) // Use the same version as the plugin
-    // Choose one: kapt or KSP for Hilt's annotation processor
     ksp(libs.hilt.compiler)
+    implementation(libs.coil.compose)
+    implementation(libs.androidx.room.runtime)
+    ksp(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.ktx)
+
 }

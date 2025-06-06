@@ -25,6 +25,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.gsrajeni.appscheduler.data.model.ScheduledApp
 import com.gsrajeni.appscheduler.ui.components.DefaultAppBar
 import com.gsrajeni.appscheduler.ui.components.DefaultConfirmationDialog
 import com.gsrajeni.appscheduler.ui.navigation.LocalNavHostController
@@ -35,9 +36,9 @@ import com.gsrajeni.appscheduler.ui.screens.dashboard.components.ScheduledAppCar
 fun DashboardScreen(
     modifier: Modifier = Modifier, viewModel: DashboardViewModel = hiltViewModel()
 ) {
-    val scheduledAppList = viewModel.scheduledApps.collectAsStateWithLifecycle()
+    val scheduledAppList = viewModel.scheduledItems.collectAsStateWithLifecycle(initialValue = listOf())
     val navController = LocalNavHostController.current
-    var showDeleteDialog by remember { mutableStateOf(false) }
+    var scheduleToDelete: ScheduledApp? by remember { mutableStateOf(null) }
     var showEditDialog by remember { mutableStateOf(false) }
     Scaffold(topBar = {
         DefaultAppBar(
@@ -64,33 +65,32 @@ fun DashboardScreen(
                 .fillMaxSize()
         ) {
             LazyColumn {
-                items(scheduledAppList.value.size) {
+                items(scheduledAppList.value.size) {index->
                     ScheduledAppCard(
-                        scheduledAppList.value[it],
+                        scheduledAppList.value[index],
                         onEditClick = {
                             showEditDialog = true
                         }, onDeleteClick = {
-                            showDeleteDialog = true
+                            scheduleToDelete = scheduledAppList.value[index]
                         })
                 }
             }
         }
-        if (showDeleteDialog) {
-            val context = LocalContext.current
+        if (scheduleToDelete != null) {
             DefaultConfirmationDialog(
                 title = "Delete Schedule?",
                 message = "Are you sure to delete the schedule? It is irreversible.",
                 confirmTitle = "Delete",
                 cancelTitle = "Cancel",
                 onDismiss = {
-                    showDeleteDialog = false
+                    scheduleToDelete = null
                 },
                 onConfirm = {
-                    showDeleteDialog = false
-                    Toast.makeText(context, "Item deleted", Toast.LENGTH_SHORT).show()
+                    viewModel.deleteSchedule(scheduleToDelete)
+                    scheduleToDelete = null
                 },
                 onCancel = {
-                    showDeleteDialog = false
+                    scheduleToDelete = null
                 }
             )
         }

@@ -1,9 +1,6 @@
 package com.gsrajeni.appscheduler.ui.screens.dashboard.components
 
-import android.graphics.Bitmap
-import android.graphics.Canvas
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -20,18 +17,21 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.graphics.painter.BitmapPainter
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import coil.compose.rememberAsyncImagePainter
 import com.gsrajeni.appscheduler.data.model.ScheduleStatus
 import com.gsrajeni.appscheduler.data.model.ScheduledApp
+import com.gsrajeni.appscheduler.ui.components.AppIconFromPackage
+import java.sql.Date
 
 @Composable
+@OptIn(ExperimentalComposeUiApi::class)
 fun ScheduledAppCard(
     app: ScheduledApp,
     onEditClick: () -> Unit,
@@ -45,18 +45,15 @@ fun ScheduledAppCard(
             modifier = Modifier.padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            val bitmap = remember { drawableToBitmap(app.icon) }
-            Icon(
-                painter = BitmapPainter(bitmap.asImageBitmap()),
-                contentDescription = app.name,
-                modifier = Modifier.size(48.dp)
-            )
+            val context = LocalContext.current
+            Log.d("packageName", "ScheduledAppCard: ${app.packageName}")
+            AppIconFromPackage(packageName = app.packageName, modifier = Modifier.size(48.dp))
 
             Spacer(modifier = Modifier.width(12.dp))
 
             Column(modifier = Modifier.weight(1f)) {
                 Text(text = app.name, fontWeight = FontWeight.Bold)
-                Text(text = "Scheduled at: ${app.time}")
+                Text(text = "Scheduled at: ${Date(app.date)}")
                 Text(
                     text = "Status: ${app.status}",
                     color = when (app.status) {
@@ -79,19 +76,4 @@ fun ScheduledAppCard(
             }
         }
     }
-}
-fun drawableToBitmap(drawable: Drawable): Bitmap {
-    if (drawable is BitmapDrawable) {
-        return drawable.bitmap
-    }
-
-    val width = drawable.intrinsicWidth.takeIf { it > 0 } ?: 1
-    val height = drawable.intrinsicHeight.takeIf { it > 0 } ?: 1
-
-    val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
-    val canvas = Canvas(bitmap)
-    drawable.setBounds(0, 0, canvas.width, canvas.height)
-    drawable.draw(canvas)
-
-    return bitmap
 }
