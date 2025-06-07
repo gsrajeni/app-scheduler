@@ -9,6 +9,7 @@ import com.gsrajeni.appscheduler.core.service.MyAlarmManager
 import com.gsrajeni.appscheduler.data.model.AppInfo
 import com.gsrajeni.appscheduler.data.model.ScheduleStatus
 import com.gsrajeni.appscheduler.data.model.ScheduledApp
+import com.gsrajeni.appscheduler.data.model.UpdateLog
 import com.gsrajeni.appscheduler.data.room.AppDatabase
 import com.gsrajeni.appscheduler.data.sources.InstalledAppDataSource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -39,7 +40,6 @@ class AddScheduleViewModel @Inject constructor(
 
     @RequiresPermission(Manifest.permission.SCHEDULE_EXACT_ALARM)
     fun createSchedule(info: AppInfo, date: Long, hour: Int, minute: Int) {
-        MyAlarmManager().addAlarm(appContext, info.packageName)
         val schedule = ScheduledApp(
             name = info.name,
             packageName = info.packageName,
@@ -49,7 +49,13 @@ class AddScheduleViewModel @Inject constructor(
             status = ScheduleStatus.Scheduled
         )
         viewModelScope.launch(Dispatchers.IO) {
-            database.scheduleDao().insertAll(schedule)
+            val id = database.scheduleDao().insert(app = schedule)
+            if(id != -1L){
+                database.scheduleDao().log(UpdateLog(
+                    description = "Added new schedule with id: $id",
+                ))
+            }
+            MyAlarmManager().addAlarm(appContext, info.packageName, id)
             _isScheduleCreated.value = true
         }
     }

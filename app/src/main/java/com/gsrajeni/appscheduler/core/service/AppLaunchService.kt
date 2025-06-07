@@ -8,13 +8,29 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.IBinder
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.gsrajeni.appscheduler.R
+import com.gsrajeni.appscheduler.data.model.ScheduleStatus
+import com.gsrajeni.appscheduler.data.model.UpdateLog
+import com.gsrajeni.appscheduler.data.room.AppDatabase
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.job
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class AppLaunchService : Service() {
+    @Inject
+    lateinit var database: AppDatabase
+
+    @Inject
+    lateinit var coroutineScope: CoroutineScope
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         val packageName = intent?.getStringExtra("packageName")
+        val appId: Long? = intent?.getLongExtra("appId", -1L)
         val notification = NotificationCompat.Builder(this, "app_launch_channel")
             .setContentTitle("App Launch Scheduler").setContentText("Launching app: $packageName")
             .setSmallIcon(R.drawable.ic_launcher_foreground)
@@ -23,8 +39,24 @@ class AppLaunchService : Service() {
         startForeground(1, notification)
 
         packageName?.let {
+            appId?.apply {
+                coroutineScope.launch(Dispatchers.IO) {
+                    val app = database.scheduleDao().getSchedule(appId)
+                        app.collectLatest {
+                            if (it != null) {
+                                it.status = ScheduleStatus.Executed
+                                database.scheduleDao().log(UpdateLog(
+                                    description = "Executed schedule with id: $appId",
+                                ))
+                                database.scheduleDao().updateSchedule(it)
+                                this.coroutineContext.job.cancel()
+                            }
+
+                        }
+                }
+            }
             if (AccessibilityServiceBridge.instance != null) {
-                //If accessibility service is avaiable, then try to run the app with that service
+                //If accessibility service is available, then try to run the app with that service
                 AccessibilityServiceBridge.instance?.launchApp(packageName)
             } else {
                 if (isAppInForeground(this)) {
@@ -48,8 +80,6 @@ class AppLaunchService : Service() {
         if (launchIntent != null) {
             launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(launchIntent)
-        } else {
-            Log.e("AppLaunchService", "Cannot launch app: $packageName")
         }
     }
 

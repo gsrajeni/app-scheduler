@@ -3,6 +3,7 @@ package com.gsrajeni.appscheduler.ui.screens.dashboard
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gsrajeni.appscheduler.data.model.ScheduledApp
+import com.gsrajeni.appscheduler.data.model.UpdateLog
 import com.gsrajeni.appscheduler.data.room.AppDatabase
 import com.gsrajeni.appscheduler.data.sources.SharedPreferenceDataSource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -51,6 +52,9 @@ class DashboardViewModel @Inject constructor(
         app?.apply {
             viewModelScope.launch(Dispatchers.IO) {
                 database.scheduleDao().delete(app)
+                database.scheduleDao().log(UpdateLog(
+                    description = "Deleted schedule with id: ${app.id}",
+                ))
             }
         }
     }

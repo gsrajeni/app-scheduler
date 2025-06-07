@@ -32,18 +32,17 @@ import java.text.SimpleDateFormat
 @Composable
 @OptIn(ExperimentalComposeUiApi::class)
 fun ScheduledAppCard(
-    app: ScheduledApp,
-    onEditClick: () -> Unit,
-    onDeleteClick: () -> Unit
+    app: ScheduledApp, onEditClick: () -> Unit, onDeleteClick: () -> Unit
 ) {
 
     Card(
-        modifier = Modifier.fillMaxWidth().padding(bottom = 12.dp, start = 16.dp, end = 16.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 12.dp, start = 16.dp, end = 16.dp),
         elevation = CardDefaults.cardElevation(2.dp),
     ) {
         Row(
-            modifier = Modifier.padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
+            modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically
         ) {
             AppIconFromPackage(packageName = app.packageName, modifier = Modifier.size(48.dp))
 
@@ -53,20 +52,18 @@ fun ScheduledAppCard(
                 Text(text = app.name, fontWeight = FontWeight.Bold)
                 Text(text = "Scheduled at: ${getFormattedScheduleTime(app)}")
                 Text(
-                    text = "Status: ${app.status}",
-                    color = when (app.status) {
+                    text = "Status: ${app.status}", color = when (app.status) {
                         ScheduleStatus.Scheduled -> Color.Blue
-                        ScheduleStatus.Executed -> Color.Green
-                        ScheduleStatus.Failed -> Color.Red
+                        ScheduleStatus.Executed -> Color.Blue
                     }
                 )
             }
 
             Column(horizontalAlignment = Alignment.End) {
-                IconButton(onClick = onEditClick) {
-                    Icon(Icons.Filled.Edit, contentDescription = "Edit")
-                }
                 if (app.status == ScheduleStatus.Scheduled) {
+                    IconButton(onClick = onEditClick) {
+                        Icon(Icons.Filled.Edit, contentDescription = "Edit")
+                    }
                     IconButton(onClick = onDeleteClick) {
                         Icon(Icons.Filled.Delete, contentDescription = "Delete")
                     }
@@ -75,9 +72,10 @@ fun ScheduledAppCard(
         }
     }
 }
-fun getFormattedScheduleTime(app: ScheduledApp): String{
+
+fun getFormattedScheduleTime(app: ScheduledApp): String {
     var date = Date(app.date)
     var calendar = Calendar.getInstance()
-    calendar.set(date.year, date.month, date.date,app.hour,  app.minute)
+    calendar.set(date.year, date.month, date.date, app.hour, app.minute)
     return SimpleDateFormat("dd/MM/yyyy\n(hh:mm a)").format(calendar.time)
 }

@@ -51,7 +51,7 @@ import java.util.Calendar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EditScheduleScreen(modifier: Modifier = Modifier, id: Int?) {
+fun EditScheduleScreen(modifier: Modifier = Modifier, id: Long?) {
     val viewModel = hiltViewModel<EditScheduleViewModel>()
     val mySchedule = viewModel.schedule.collectAsStateWithLifecycle()
     var updatedSchedule by remember { mutableStateOf(mySchedule) }

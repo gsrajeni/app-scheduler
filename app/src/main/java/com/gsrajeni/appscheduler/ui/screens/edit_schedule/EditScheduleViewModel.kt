@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gsrajeni.appscheduler.data.model.ScheduledApp
+import com.gsrajeni.appscheduler.data.model.UpdateLog
 import com.gsrajeni.appscheduler.data.room.AppDatabase
 import com.gsrajeni.appscheduler.data.sources.InstalledAppDataSource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -30,12 +31,15 @@ class EditScheduleViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             app?.apply {
                 database.scheduleDao().updateSchedule(app)
+                database.scheduleDao().log(UpdateLog(
+                    description = "Edited schedule with id: ${app.id}",
+                ))
                 _isScheduleUpdated.value = true
             }
         }
     }
 
-    fun getSchedule(id: Int?) {
+    fun getSchedule(id: Long?) {
         viewModelScope.launch(Dispatchers.IO) {
             database.scheduleDao().getSchedule(id).collectLatest {
                 _schedule.value = it
