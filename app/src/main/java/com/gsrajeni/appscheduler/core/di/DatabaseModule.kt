@@ -2,6 +2,7 @@ package com.gsrajeni.appscheduler.core.di
 
 import android.content.Context
 import androidx.room.Room
+import com.gsrajeni.appscheduler.data.constants.Constants
 import com.gsrajeni.appscheduler.data.room.AppDatabase
 import com.gsrajeni.appscheduler.data.sources.SharedPreferenceDataSource
 import dagger.Module
@@ -16,7 +17,7 @@ class DatabaseModule {
     @Provides
     fun getRoomDatabase(@ApplicationContext context: Context): AppDatabase {
         val room = Room.databaseBuilder(
-            context, AppDatabase::class.java, "schedule-database"
+            context, AppDatabase::class.java, Constants.scheduleDatabase
         ).build()
         return room
     }

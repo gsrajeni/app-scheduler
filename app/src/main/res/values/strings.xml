@@ -1,3 +1,37 @@
 <resources>
     <string name="app_name">App Scheduler</string>
+    <string name="notification_permission_required">Notification Permission Required</string>
+    <string name="this_app_requires_notification_permission_to_function_properly_please_enable_it_in_settings">This app requires notification permission to function properly. Please enable it in settings.</string>
+    <string name="open_settings">Open Settings</string>
+    <string name="no_icon">No Icon</string>
+    <string name="back">Back</string>
+    <string name="empty_list">Empty List</string>
+    <string name="there_is_no_schedule_available">There is no schedule available!</string>
+    <string name="select_an_application">Select an application</string>
+    <string name="installed_apps">Installed Apps</string>
+    <string name="close">Close</string>
+    <string name="add_schedule">Add Schedule</string>
+    <string name="select_date">Select Date</string>
+    <string name="selected_date">Selected Date: %1$s</string>
+    <string name="no_date_selected">No date selected</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="something_went_wrong">Something went wrong</string>
+    <string name="added_new_schedule_with_name">Added new schedule with name: %1$s</string>
+    <string name="scheduled_at">Scheduled at: %1$s</string>
+    <string name="status">Status: %1$s</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
+    <string name="app_scheduler">App Scheduler</string>
+    <string name="logs">Logs</string>
+    <string name="delete_schedule">Delete Schedule?</string>
+    <string name="are_you_sure_to_delete_the_schedule_it_is_irreversible">Are you sure to delete the schedule? It is irreversible.</string>
+    <string name="permission_required">Permission Required?</string>
+    <string name="please_enable_accessibility_access_for_this_app_to_allow_background_app_launching_otherwise_your_app_will_not_be_able_to_open_other_app_when_it_will_be_in_background">Please enable accessibility access for this app to allow background app launching. Otherwise your app will not be able to open other app when it will be in background.</string>
+    <string name="deleted_schedule_with_name">Deleted schedule with name: %1$s</string>
+    <string name="app_not_found">App not found</string>
+    <string name="update_schedule">Update Schedule</string>
+    <string name="edited_schedule_with_name">Edited schedule with name: %1$s</string>
+    <string name="schedule_logs">Schedule Logs</string>
+    <string name="time">Time: %1$s</string>
 </resources>

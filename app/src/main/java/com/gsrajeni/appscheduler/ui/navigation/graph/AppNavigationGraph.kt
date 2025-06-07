@@ -37,12 +37,12 @@ fun NavGraphBuilder.navigationGraph() {
     composable<AppRoute.DashboardRoute> {
         DashboardScreen()
     }
-    composable<AppRoute.AddScheduleRoute> { backStackEntry ->
+    composable<AppRoute.AddScheduleRoute> {
         AddScheduleScreen()
     }
 
-    composable<AppRoute.EditScheduleRoute> { backStackEntry ->
-        val app = backStackEntry.toRoute<AppRoute.EditScheduleRoute>()
+    composable<AppRoute.EditScheduleRoute> {
+        val app = it.toRoute<AppRoute.EditScheduleRoute>()
         EditScheduleScreen(id = app.scheduleId)
     }
     composable<AppRoute.ScheduleLogRoute> {

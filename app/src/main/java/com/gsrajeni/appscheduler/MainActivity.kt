@@ -17,8 +17,10 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.res.stringResource
 import androidx.core.content.ContextCompat
 import androidx.navigation.compose.rememberNavController
+import com.gsrajeni.appscheduler.data.constants.Constants
 import com.gsrajeni.appscheduler.ui.components.DefaultConfirmationDialog
 import com.gsrajeni.appscheduler.ui.navigation.LocalNavHostController
 import com.gsrajeni.appscheduler.ui.theme.AppSchedulerTheme
@@ -45,9 +47,9 @@ class MainActivity : ComponentActivity() {
                     AppNavigationGraph()
                     if (showNotificationPermissionDialog.value) {
                         DefaultConfirmationDialog(
-                            title = "Notification Permission Required",
-                            message = "This app requires notification permission to function properly. Please enable it in settings.",
-                            confirmTitle = "Open Settings",
+                            title = stringResource(R.string.notification_permission_required),
+                            message = stringResource(R.string.this_app_requires_notification_permission_to_function_properly_please_enable_it_in_settings),
+                            confirmTitle = stringResource(R.string.open_settings),
                             cancelTitle = null,
                             onConfirm = {
                                 showNotificationPermissionDialog.value = false
@@ -90,7 +92,8 @@ class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     private fun createNotificationChannel() {
         val channel = NotificationChannel(
-            "app_launch_channel", "App Launch Service", NotificationManager.IMPORTANCE_LOW
+            Constants.appLaunchChannel,
+            Constants.appLaunchService, NotificationManager.IMPORTANCE_HIGH
         )
         val manager = getSystemService(NotificationManager::class.java)
         manager.createNotificationChannel(channel)

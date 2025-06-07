@@ -1,6 +1,6 @@
 package com.gsrajeni.appscheduler.ui.screens.dashboard.components
 
-import android.icu.util.Calendar
+import android.content.Context
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -21,12 +21,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.gsrajeni.appscheduler.R
+import com.gsrajeni.appscheduler.data.constants.Constants
 import com.gsrajeni.appscheduler.data.model.ScheduleStatus
 import com.gsrajeni.appscheduler.data.model.ScheduledApp
 import com.gsrajeni.appscheduler.ui.components.AppIconFromPackage
-import java.sql.Date
 import java.text.SimpleDateFormat
 
 @Composable
@@ -34,7 +37,6 @@ import java.text.SimpleDateFormat
 fun ScheduledAppCard(
     app: ScheduledApp, onEditClick: () -> Unit, onDeleteClick: () -> Unit
 ) {
-
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -50,9 +52,13 @@ fun ScheduledAppCard(
 
             Column(modifier = Modifier.weight(1f)) {
                 Text(text = app.name, fontWeight = FontWeight.Bold)
-                Text(text = "Scheduled at: ${getFormattedScheduleTime(app)}")
                 Text(
-                    text = "Status: ${app.status}", color = when (app.status) {
+                    text = stringResource(
+                        R.string.scheduled_at, getFormattedScheduleTime(app)
+                    )
+                )
+                Text(
+                    text = stringResource(R.string.status, app.status), color = when (app.status) {
                         ScheduleStatus.Scheduled -> Color.Blue
                         ScheduleStatus.Executed -> Color.Green
                     }
@@ -62,10 +68,13 @@ fun ScheduledAppCard(
             Column(horizontalAlignment = Alignment.End) {
                 if (app.status == ScheduleStatus.Scheduled) {
                     IconButton(onClick = onEditClick) {
-                        Icon(Icons.Filled.Edit, contentDescription = "Edit")
+                        Icon(Icons.Filled.Edit, contentDescription = stringResource(R.string.edit))
                     }
                     IconButton(onClick = onDeleteClick) {
-                        Icon(Icons.Filled.Delete, contentDescription = "Delete")
+                        Icon(
+                            Icons.Filled.Delete,
+                            contentDescription = stringResource(R.string.delete)
+                        )
                     }
                 }
             }
@@ -74,5 +83,5 @@ fun ScheduledAppCard(
 }
 
 fun getFormattedScheduleTime(app: ScheduledApp): String {
-    return SimpleDateFormat("dd/MM/yyyy\n(hh:mm a)").format(app.dateTime)
+    return SimpleDateFormat(Constants.dd_mm_yyyy_hh_mm_a).format(app.dateTime)
 }

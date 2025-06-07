@@ -6,7 +6,6 @@ import android.graphics.Canvas
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Icon
@@ -18,7 +17,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
+import androidx.core.graphics.createBitmap
+import com.gsrajeni.appscheduler.R
 
 @Composable
 fun AppIconFromPackage(packageName: String, modifier: Modifier = Modifier) {
@@ -38,7 +39,7 @@ fun AppIconFromPackage(packageName: String, modifier: Modifier = Modifier) {
     } ?: run {
         Icon(
             imageVector = Icons.Default.Warning,
-            contentDescription = ""
+            contentDescription = stringResource(R.string.no_icon)
         )
     }
 
@@ -61,7 +62,7 @@ fun drawableToBitmap(drawable: Drawable): Bitmap {
     val width = drawable.intrinsicWidth.takeIf { it > 0 } ?: 1
     val height = drawable.intrinsicHeight.takeIf { it > 0 } ?: 1
 
-    val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+    val bitmap = createBitmap(width, height)
     val canvas = Canvas(bitmap)
     drawable.setBounds(0, 0, canvas.width, canvas.height)
     drawable.draw(canvas)

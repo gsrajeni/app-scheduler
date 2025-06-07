@@ -15,10 +15,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.gsrajeni.appscheduler.R
+import com.gsrajeni.appscheduler.data.constants.Constants
 import com.gsrajeni.appscheduler.ui.components.DefaultAppBar
 import com.gsrajeni.appscheduler.ui.components.EmptyContent
 import java.text.SimpleDateFormat
@@ -31,7 +34,7 @@ fun ScheduleLogsScreen(modifier: Modifier = Modifier) {
     val viewmodel: ScheduleLogViewModel = hiltViewModel()
     val logList = viewmodel.scheduleLogs.collectAsStateWithLifecycle(listOf())
     Scaffold(topBar = {
-        DefaultAppBar(title = "Schedule Logs")
+        DefaultAppBar(title = stringResource(R.string.schedule_logs))
     }) {
         Box(modifier = modifier.padding(it), contentAlignment = Alignment.Center) {
             if (logList.value.isEmpty()) {
@@ -50,13 +53,14 @@ fun ScheduleLogsScreen(modifier: Modifier = Modifier) {
                         ) {
                             Column(modifier = Modifier.padding(24.dp)) {
                                 Text(
-                                    "Time: ${
-                                        SimpleDateFormat("dd/MM/yyyy hh:mm:ss aa").format(
+                                    stringResource(
+                                        R.string.time,
+                                        SimpleDateFormat(Constants.dd_mm_yyyy_hh_mm_ss_a).format(
                                             Date(
                                                 logList.value[it].createdAt
                                             )
                                         )
-                                    }"
+                                    )
                                 )
                                 Text(
                                     logList.value[it].description,

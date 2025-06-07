@@ -27,9 +27,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.gsrajeni.appscheduler.R
 import com.gsrajeni.appscheduler.data.model.AppInfo
 import com.gsrajeni.appscheduler.ui.components.AppIconFromPackage
 import com.gsrajeni.appscheduler.ui.screens.add_schedule.AddScheduleViewModel
@@ -61,7 +63,7 @@ fun InstalledAppsBottomSheet(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    "Installed Apps", style = MaterialTheme.typography.titleLarge
+                    stringResource(R.string.installed_apps), style = MaterialTheme.typography.titleLarge
                 )
                 IconButton(onClick = {
                     scope.launch { sheetState.hide() }.invokeOnCompletion {
@@ -70,7 +72,7 @@ fun InstalledAppsBottomSheet(
                         }
                     }
                 }) {
-                    Icon(Icons.Filled.Close, contentDescription = "Close")
+                    Icon(Icons.Filled.Close, contentDescription = stringResource(R.string.close))
                 }
             }
             Spacer(modifier = Modifier.height(16.dp))

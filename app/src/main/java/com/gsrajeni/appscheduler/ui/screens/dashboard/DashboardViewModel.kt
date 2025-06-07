@@ -3,6 +3,7 @@ package com.gsrajeni.appscheduler.ui.screens.dashboard
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.gsrajeni.appscheduler.R
 import com.gsrajeni.appscheduler.core.service.MyAlarmManager
 import com.gsrajeni.appscheduler.data.model.ScheduledApp
 import com.gsrajeni.appscheduler.data.model.UpdateLog
@@ -47,19 +48,17 @@ class DashboardViewModel @Inject constructor(
         }
     }
 
-    fun editSchedule(updatedApp: ScheduledApp) {
-        _scheduledApps.value = _scheduledApps.value.map {
-            if (it.packageName == updatedApp.packageName) updatedApp else it
-        }
-    }
-
     fun deleteSchedule(app: ScheduledApp?) {
         app?.apply {
             viewModelScope.launch(Dispatchers.IO) {
                 database.scheduleDao().delete(app)
-                database.scheduleDao().log(UpdateLog(
-                    description = "Deleted schedule with name: ${app.name}",
-                ))
+                database.scheduleDao().log(
+                    UpdateLog(
+                        description = context.getString(
+                            R.string.deleted_schedule_with_name, app.name
+                        ),
+                    )
+                )
                 alarmManager.deleteAlarm(context, app.packageName, app.id)
             }
         }

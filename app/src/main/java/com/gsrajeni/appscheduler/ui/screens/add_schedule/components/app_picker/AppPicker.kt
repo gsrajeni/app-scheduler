@@ -29,8 +29,10 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil.compose.rememberAsyncImagePainter
+import com.gsrajeni.appscheduler.R
 import com.gsrajeni.appscheduler.data.model.AppInfo
 import kotlinx.coroutines.launch
 
@@ -85,7 +87,7 @@ fun AppPicker(
                 }
                 .padding(16.dp), // Inner padding
             contentAlignment = Alignment.Center) {
-            if (pickedApp == null) Text("Select an application")
+            if (pickedApp == null) Text(stringResource(R.string.select_an_application))
             else Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {

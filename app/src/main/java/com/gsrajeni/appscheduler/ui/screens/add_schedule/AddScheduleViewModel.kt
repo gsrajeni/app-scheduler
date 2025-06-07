@@ -2,10 +2,10 @@ package com.gsrajeni.appscheduler.ui.screens.add_schedule
 
 import android.Manifest
 import android.content.Context
-import android.icu.util.Calendar
 import androidx.annotation.RequiresPermission
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.gsrajeni.appscheduler.R
 import com.gsrajeni.appscheduler.core.service.MyAlarmManager
 import com.gsrajeni.appscheduler.data.model.AppInfo
 import com.gsrajeni.appscheduler.data.model.ScheduleStatus
@@ -21,7 +21,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.util.Date
 import javax.inject.Inject
-import kotlin.math.min
 
 @HiltViewModel
 class AddScheduleViewModel @Inject constructor(
@@ -54,7 +53,10 @@ class AddScheduleViewModel @Inject constructor(
             val id = database.scheduleDao().insert(app = schedule)
             if(id != -1L){
                 database.scheduleDao().log(UpdateLog(
-                    description = "Added new schedule with name: ${schedule.name}",
+                    description = appContext.getString(
+                        R.string.added_new_schedule_with_name,
+                        schedule.name
+                    ),
                 ))
             }
             val calendar = java.util.Calendar.getInstance()

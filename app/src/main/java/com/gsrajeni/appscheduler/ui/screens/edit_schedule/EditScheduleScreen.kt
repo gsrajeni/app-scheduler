@@ -40,10 +40,12 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.gsrajeni.appscheduler.R
+import com.gsrajeni.appscheduler.data.constants.Constants
 import com.gsrajeni.appscheduler.ui.components.AppIconFromPackage
 import com.gsrajeni.appscheduler.ui.components.DefaultAppBar
 import com.gsrajeni.appscheduler.ui.navigation.LocalNavHostController
@@ -80,7 +82,7 @@ fun EditScheduleScreen(modifier: Modifier = Modifier, id: Long?) {
     }
     Scaffold(topBar = {
         DefaultAppBar(
-            title = "Edit Schedule",
+            title = stringResource(R.string.add_schedule),
         )
     }) {
         Column(
@@ -96,7 +98,7 @@ fun EditScheduleScreen(modifier: Modifier = Modifier, id: Long?) {
                     .height(100.dp)
                     .fillMaxWidth()
                     .background(
-                            MaterialTheme.colorScheme.surface
+                        MaterialTheme.colorScheme.surface
                     )
                     .drawBehind {
                         val strokeColor = Color.Gray
@@ -124,10 +126,12 @@ fun EditScheduleScreen(modifier: Modifier = Modifier, id: Long?) {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     updatedSchedule.value?.packageName?.apply {
-                        AppIconFromPackage(this, modifier = Modifier.padding(end = 24.dp).size(48.dp))
+                        AppIconFromPackage(this, modifier = Modifier
+                            .padding(end = 24.dp)
+                            .size(48.dp))
                     }
                     Text(
-                        updatedSchedule.value?.name ?: "App not found",
+                        updatedSchedule.value?.name ?: stringResource(R.string.app_not_found),
                         style = MaterialTheme.typography.titleLarge
                     )
                 }
@@ -137,25 +141,25 @@ fun EditScheduleScreen(modifier: Modifier = Modifier, id: Long?) {
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 ElevatedButton(onClick = { showDatePicker = true }) {
-                    Text("Select Date")
+                    Text(stringResource(R.string.select_date))
                 }
                 Spacer(modifier = Modifier.width(16.dp))
                 Text(text = datePickerState.selectedDateMillis?.let { millis ->
                     "Selected Date: ${
                         DateFormat.format(
-                            "dd/MM/yyyy", millis
+                            Constants.dd_mm_yyyy, millis
                         )
                     }"
-                } ?: "No date selected")
+                } ?: stringResource(R.string.no_date_selected))
             }
             if (showDatePicker) {
                 DatePickerDialog(onDismissRequest = { showDatePicker = false }, confirmButton = {
                     TextButton(onClick = { showDatePicker = false }) {
-                        Text("OK")
+                        Text(stringResource(R.string.ok))
                     }
                 }, dismissButton = {
                     TextButton(onClick = { showDatePicker = false }) {
-                        Text("Cancel")
+                        Text(stringResource(R.string.cancel))
                     }
                 }) {
                     DatePicker(
@@ -180,7 +184,7 @@ fun EditScheduleScreen(modifier: Modifier = Modifier, id: Long?) {
                 )
                 viewModel.editSchedule(newSchedule)
             }) {
-                Text("Update Schedule")
+                Text(stringResource(R.string.update_schedule))
             }
 
         }

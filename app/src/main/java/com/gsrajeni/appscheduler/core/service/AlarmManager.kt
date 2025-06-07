@@ -3,13 +3,14 @@ import android.app.AlarmManager
 import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
+import com.gsrajeni.appscheduler.data.constants.Constants
 
 class MyAlarmManager {
     fun addAlarm(context: Context, packageName: String, id: Long, triggerTimeMillis: Long) {
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val intent = Intent(context, AppLaunchReceiver::class.java).apply {
-            putExtra("packageName", packageName)
-            putExtra("appId", id)
+            putExtra(Constants.packageName, packageName)
+            putExtra(Constants.appId, id)
         }
         val pendingIntent = PendingIntent.getBroadcast(
             context,
@@ -26,8 +27,8 @@ class MyAlarmManager {
     fun deleteAlarm(context: Context, packageName: String, id: Long) {
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val intent = Intent(context, AppLaunchReceiver::class.java).apply {
-            putExtra("packageName", packageName)
-            putExtra("appId", id)
+            putExtra(Constants.packageName, packageName)
+            putExtra(Constants.appId, id)
         }
         val pendingIntent = PendingIntent.getBroadcast(
             context,

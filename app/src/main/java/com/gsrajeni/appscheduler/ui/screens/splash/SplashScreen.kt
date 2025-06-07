@@ -1,5 +1,6 @@
 package com.gsrajeni.appscheduler.ui.screens.splash
 
+import AppRoute
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -12,10 +13,8 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.sp
-import com.gsrajeni.appscheduler.data.sources.InstalledAppDataSource
 import com.gsrajeni.appscheduler.ui.navigation.LocalNavHostController
 import com.gsrajeni.appscheduler.ui.theme.Purple40
-import com.gsrajeni.appscheduler.ui.utils.currentActivity
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -33,9 +32,11 @@ fun SplashScreen(modifier: Modifier = Modifier) {
         }
     }
     Scaffold {
-        Box(modifier = modifier
-            .padding(it)
-            .fillMaxSize(), contentAlignment = Alignment.Center) {
+        Box(
+            modifier = modifier
+                .padding(it)
+                .fillMaxSize(), contentAlignment = Alignment.Center
+        ) {
             Text(text = "Splash Screen", color = Purple40, fontSize = 48.sp)
         }
 

@@ -3,6 +3,7 @@ package com.gsrajeni.appscheduler.ui.screens.edit_schedule
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.gsrajeni.appscheduler.R
 import com.gsrajeni.appscheduler.core.service.MyAlarmManager
 import com.gsrajeni.appscheduler.data.model.ScheduledApp
 import com.gsrajeni.appscheduler.data.model.UpdateLog
@@ -33,7 +34,10 @@ class EditScheduleViewModel @Inject constructor(
                 database.scheduleDao().updateSchedule(app)
                 database.scheduleDao().log(
                     UpdateLog(
-                        description = "Edited schedule with name: ${app.name}",
+                        description = appContext.getString(
+                            R.string.edited_schedule_with_name,
+                            app.name
+                        ),
                     )
                 )
                 alarmManager.addAlarm(appContext, app.packageName, app.id, app.dateTime.time)

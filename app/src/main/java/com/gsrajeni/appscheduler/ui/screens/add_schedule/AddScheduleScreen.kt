@@ -29,9 +29,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.gsrajeni.appscheduler.R
+import com.gsrajeni.appscheduler.data.constants.Constants
 import com.gsrajeni.appscheduler.data.model.AppInfo
 import com.gsrajeni.appscheduler.ui.components.DefaultAppBar
 import com.gsrajeni.appscheduler.ui.navigation.LocalNavHostController
@@ -72,7 +76,7 @@ fun AddScheduleScreen(modifier: Modifier = Modifier) {
     }
     Scaffold(topBar = {
         DefaultAppBar(
-            title = "Add Schedule",
+            title = stringResource(R.string.add_schedule),
         )
     }) {
         Column(
@@ -91,18 +95,18 @@ fun AddScheduleScreen(modifier: Modifier = Modifier) {
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     ElevatedButton(onClick = { showDatePicker = true }) {
-                        Text("Select Date")
+                        Text(stringResource(R.string.select_date))
                     }
                     Spacer(modifier = Modifier.width(16.dp))
                     Text(
                         text = datePickerState.selectedDateMillis?.let { millis ->
-                            "Selected Date: ${
-                                DateFormat.format(
-                                    "dd/MM/yyyy",
+                            stringResource(
+                                R.string.selected_date, DateFormat.format(
+                                    Constants.dd_mm_yyyy,
                                     millis
                                 )
-                            }"
-                        } ?: "No date selected"
+                            )
+                        } ?: stringResource(R.string.no_date_selected)
                     )
                 }
                 if (showDatePicker) {
@@ -110,12 +114,12 @@ fun AddScheduleScreen(modifier: Modifier = Modifier) {
                         onDismissRequest = { showDatePicker = false },
                         confirmButton = {
                             TextButton(onClick = { showDatePicker = false }) {
-                                Text("OK")
+                                Text(stringResource(R.string.ok))
                             }
                         },
                         dismissButton = {
                             TextButton(onClick = { showDatePicker = false }) {
-                                Text("Cancel")
+                                Text(stringResource(R.string.cancel))
                             }
                         }
                     ) {
@@ -144,10 +148,11 @@ fun AddScheduleScreen(modifier: Modifier = Modifier) {
                             )
                         }
                         else{
-                            Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context,
+                                context.getString(R.string.something_went_wrong), Toast.LENGTH_SHORT).show()
                         }
                     }) {
-                        Text("Add Schedule")
+                        Text(context.getString(R.string.add_schedule))
                     }
             }
 

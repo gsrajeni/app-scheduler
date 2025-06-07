@@ -26,9 +26,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.gsrajeni.appscheduler.R
 import com.gsrajeni.appscheduler.data.model.ScheduledApp
 import com.gsrajeni.appscheduler.ui.components.DefaultAppBar
 import com.gsrajeni.appscheduler.ui.components.DefaultConfirmationDialog
@@ -49,9 +51,9 @@ fun DashboardScreen(
     val context = LocalContext.current
     Scaffold(topBar = {
         DefaultAppBar(
-            title = "App Scheduler", actions = {
+            title = stringResource(R.string.app_scheduler), actions = {
                 Text(
-                    "Logs", modifier = Modifier
+                    stringResource(R.string.logs), modifier = Modifier
                         .padding(8.dp)
                         .clickable(onClick = {
                             navController?.navigate(AppRoute.ScheduleLogRoute)
@@ -63,7 +65,7 @@ fun DashboardScreen(
         FloatingActionButton(onClick = {
             navController?.navigate(AppRoute.AddScheduleRoute)
         }, shape = RoundedCornerShape(percent = 50)) {
-            Image(imageVector = Icons.Filled.Add, contentDescription = "")
+            Image(imageVector = Icons.Filled.Add, contentDescription = context.getString(R.string.add_schedule))
         }
     }) {
         Box(
@@ -87,10 +89,10 @@ fun DashboardScreen(
         }
         if (scheduleToDelete != null) {
             DefaultConfirmationDialog(
-                title = "Delete Schedule?",
-                message = "Are you sure to delete the schedule? It is irreversible.",
-                confirmTitle = "Delete",
-                cancelTitle = "Cancel",
+                title = stringResource(R.string.delete_schedule),
+                message = stringResource(R.string.are_you_sure_to_delete_the_schedule_it_is_irreversible),
+                confirmTitle = stringResource(R.string.delete),
+                cancelTitle = stringResource(R.string.cancel),
                 onDismiss = {
                     scheduleToDelete = null
                 },
@@ -105,10 +107,10 @@ fun DashboardScreen(
 
         if (!isAccessiblityShown) {
             DefaultConfirmationDialog(
-                title = "Permission Required?",
-                message = "Please enable accessibility access for this app to allow background app launching. Otherwise your app will not be able to open other app when it will be in background.",
-                confirmTitle = "Open Settings",
-                cancelTitle = "Cancel",
+                title = stringResource(R.string.permission_required),
+                message = stringResource(R.string.please_enable_accessibility_access_for_this_app_to_allow_background_app_launching_otherwise_your_app_will_not_be_able_to_open_other_app_when_it_will_be_in_background),
+                confirmTitle = stringResource(R.string.open_settings),
+                cancelTitle = stringResource(R.string.cancel),
                 onDismiss = {
                     viewModel.updateAccessiblityShownFlag(true)
                 },
