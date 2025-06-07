@@ -59,7 +59,6 @@ class AddScheduleViewModel @Inject constructor(
                     ),
                 ))
             }
-            val calendar = java.util.Calendar.getInstance()
             alarmManager.addAlarm(appContext, info.packageName, id, dateTime.time)
             _isScheduleCreated.value = true
         }

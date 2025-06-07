@@ -66,9 +66,10 @@ fun EditScheduleScreen(modifier: Modifier = Modifier, id: Long?) {
             }
         })
     var showDatePicker by remember { mutableStateOf(false) }
+    val calendar = Calendar.getInstance()
     val timePickerState = rememberTimePickerState(
-        initialHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY),
-        initialMinute = Calendar.getInstance().get(Calendar.MINUTE),
+        initialHour = calendar.get(Calendar.HOUR_OF_DAY),
+        initialMinute = calendar.get(Calendar.MINUTE),
     )
     val isScheduleUpdated by viewModel.isScheduleUpdated.collectAsStateWithLifecycle()
     val navController = LocalNavHostController.current
@@ -176,8 +177,10 @@ fun EditScheduleScreen(modifier: Modifier = Modifier, id: Long?) {
                 datePickerState.selectedDateMillis?.let {
                     calendar.timeInMillis = it
                 }
-                calendar.set(Calendar.HOUR_OF_DAY, timePickerState.hour)
-                calendar.set(Calendar.MINUTE, timePickerState.minute)
+                calendar.run {
+                    set(Calendar.HOUR_OF_DAY, timePickerState.hour)
+                    set(Calendar.MINUTE, timePickerState.minute)
+                }
 
                 val newSchedule = mySchedule.value?.copy(
                     dateTime = Date(calendar.timeInMillis)

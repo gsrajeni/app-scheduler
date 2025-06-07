@@ -94,14 +94,14 @@ fun AppPicker(
                 pickedApp?.icon?.apply {
                     Image(
                         painter = rememberAsyncImagePainter(model = this), // Use Coil's painter
-                        contentDescription = "${pickedApp?.name ?: "App"} icon", // More descriptive
+                        contentDescription = "${pickedApp?.name ?: stringResource(R.string.app)} icon", // More descriptive
                         modifier = Modifier
                             .size(48.dp) // Example size, adjust as needed
                             .padding(end = 12.dp) // Adjust padding as needed
                     )
                 }
                 Text(
-                    pickedApp?.name ?: "Name not found", style = MaterialTheme.typography.titleLarge
+                    pickedApp?.name ?: stringResource(R.string.name_not_found), style = MaterialTheme.typography.titleLarge
                 )
             }
         }

@@ -6,7 +6,9 @@ import android.provider.Settings
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
@@ -14,8 +16,10 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -52,20 +56,32 @@ fun DashboardScreen(
     Scaffold(topBar = {
         DefaultAppBar(
             title = stringResource(R.string.app_scheduler), actions = {
-                Text(
-                    stringResource(R.string.logs), modifier = Modifier
-                        .padding(8.dp)
-                        .clickable(onClick = {
-                            navController?.navigate(AppRoute.ScheduleLogRoute)
-                        })
-                )
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.clickable(onClick = {
+                        navController?.navigate(AppRoute.ScheduleLogRoute)
+                    })
+                ){
+                    Icon(
+                        imageVector = Icons.Default.Info,
+                        contentDescription = stringResource(R.string.logs)
+                    )
+                    Text(
+                        stringResource(R.string.logs),
+                        modifier = Modifier
+                            .padding(8.dp)
+                    )
+                }
             }, showBack = false
         )
     }, floatingActionButton = {
         FloatingActionButton(onClick = {
             navController?.navigate(AppRoute.AddScheduleRoute)
         }, shape = RoundedCornerShape(percent = 50)) {
-            Image(imageVector = Icons.Filled.Add, contentDescription = context.getString(R.string.add_schedule))
+            Image(
+                imageVector = Icons.Filled.Add,
+                contentDescription = context.getString(R.string.add_schedule)
+            )
         }
     }) {
         Box(

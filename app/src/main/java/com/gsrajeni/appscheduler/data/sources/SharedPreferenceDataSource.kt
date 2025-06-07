@@ -1,21 +1,23 @@
 package com.gsrajeni.appscheduler.data.sources
 
 import android.content.Context
+import android.content.SharedPreferences
 import com.gsrajeni.appscheduler.data.constants.Constants
+import androidx.core.content.edit
 
 class SharedPreferenceDataSource(
-    private val context: Context
+    context: Context
 ) {
     companion object {
-        private val IS_ACCESSIBILITY_POPUP_SHOWN = Constants.IS_ACCESSIBILITY_POPUP_SHOWN
+        private const val IS_ACCESSIBILITY_POPUP_SHOWN = Constants.IS_ACCESSIBILITY_POPUP_SHOWN
     }
 
-    val sharedPref = context.getSharedPreferences(Constants.myPrefs, Context.MODE_PRIVATE)
+    val sharedPref: SharedPreferences = context.getSharedPreferences(Constants.myPrefs, Context.MODE_PRIVATE)
     val isAccessibilityPopupShown = sharedPref.getBoolean(IS_ACCESSIBILITY_POPUP_SHOWN, false)
 
-    fun updateAccessiblityPopupShown(value: Boolean) {
-        val editor = sharedPref.edit()
-        editor.putBoolean(IS_ACCESSIBILITY_POPUP_SHOWN, value)
-        editor.apply()
+    fun updateAccessibilityPopupShown(value: Boolean) {
+        sharedPref.edit {
+            putBoolean(IS_ACCESSIBILITY_POPUP_SHOWN, value)
+        }
     }
 }

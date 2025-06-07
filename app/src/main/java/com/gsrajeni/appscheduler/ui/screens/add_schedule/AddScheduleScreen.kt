@@ -30,7 +30,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -56,9 +55,10 @@ fun AddScheduleScreen(modifier: Modifier = Modifier) {
             }
         })
     var showDatePicker by remember { mutableStateOf(false) }
+    val calendar = Calendar.getInstance()
     val timePickerState = rememberTimePickerState(
-        initialHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY),
-        initialMinute = Calendar.getInstance().get(Calendar.MINUTE),
+        initialHour = calendar.get(Calendar.HOUR_OF_DAY),
+        initialMinute = calendar.get(Calendar.MINUTE),
     )
     val context = LocalContext.current
     val isScheduleCreated by viewModel.isScheduleCreated.collectAsStateWithLifecycle()
@@ -68,9 +68,10 @@ fun AddScheduleScreen(modifier: Modifier = Modifier) {
         if (timePickerState.hour == 0 && timePickerState.minute == 0) return false
         return true
     }
+
     val navController = LocalNavHostController.current
     LaunchedEffect(isScheduleCreated) {
-        if (isScheduleCreated){
+        if (isScheduleCreated) {
             navController?.popBackStack()
         }
     }
@@ -98,16 +99,13 @@ fun AddScheduleScreen(modifier: Modifier = Modifier) {
                         Text(stringResource(R.string.select_date))
                     }
                     Spacer(modifier = Modifier.width(16.dp))
-                    Text(
-                        text = datePickerState.selectedDateMillis?.let { millis ->
-                            stringResource(
-                                R.string.selected_date, DateFormat.format(
-                                    Constants.dd_mm_yyyy,
-                                    millis
-                                )
+                    Text(text = datePickerState.selectedDateMillis?.let { millis ->
+                        stringResource(
+                            R.string.selected_date, DateFormat.format(
+                                Constants.dd_mm_yyyy, millis
                             )
-                        } ?: stringResource(R.string.no_date_selected)
-                    )
+                        )
+                    } ?: stringResource(R.string.no_date_selected))
                 }
                 if (showDatePicker) {
                     DatePickerDialog(
@@ -121,39 +119,38 @@ fun AddScheduleScreen(modifier: Modifier = Modifier) {
                             TextButton(onClick = { showDatePicker = false }) {
                                 Text(stringResource(R.string.cancel))
                             }
-                        }
-                    ) {
+                        }) {
                         DatePicker(
                             state = datePickerState
                         )
                     }
                 }
-                if (selectedApp != null)
-                    TimePicker(
-                        modifier = Modifier.padding(top = 24.dp),
-                        state = timePickerState
-                    )
-                if (selectedApp != null)
-                    ElevatedButton(onClick = {
-                        if (isEverythingValid()) {
-                            val calendar = Calendar.getInstance()
-                            datePickerState.selectedDateMillis?.let {
-                                calendar.timeInMillis = it
-                            }
-                            calendar.set(Calendar.HOUR_OF_DAY, timePickerState.hour)
-                            calendar.set(Calendar.MINUTE, timePickerState.minute)
-                            viewModel.createSchedule(
-                                selectedApp!!,
-                                Date(calendar.timeInMillis)
-                            )
+                if (selectedApp != null) TimePicker(
+                    modifier = Modifier.padding(top = 24.dp), state = timePickerState
+                )
+                if (selectedApp != null) ElevatedButton(onClick = {
+                    if (isEverythingValid()) {
+                        val calendar = Calendar.getInstance()
+                        datePickerState.selectedDateMillis?.let {
+                            calendar.timeInMillis = it
                         }
-                        else{
-                            Toast.makeText(context,
-                                context.getString(R.string.something_went_wrong), Toast.LENGTH_SHORT).show()
+                        calendar.run {
+                            set(Calendar.HOUR_OF_DAY, timePickerState.hour)
+                            set(Calendar.MINUTE, timePickerState.minute)
                         }
-                    }) {
-                        Text(context.getString(R.string.add_schedule))
+                        viewModel.createSchedule(
+                            selectedApp!!, Date(calendar.timeInMillis)
+                        )
+                    } else {
+                        Toast.makeText(
+                            context,
+                            context.getString(R.string.something_went_wrong),
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
+                }) {
+                    Text(context.getString(R.string.add_schedule))
+                }
             }
 
         }

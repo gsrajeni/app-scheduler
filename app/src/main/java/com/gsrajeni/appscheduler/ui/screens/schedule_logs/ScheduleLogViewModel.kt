@@ -7,7 +7,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ScheduleLogViewModel @Inject constructor(
-    private val database: AppDatabase
+    database: AppDatabase
 ): ViewModel() {
     val scheduleLogs = database.scheduleDao().getAllLogs()
 }

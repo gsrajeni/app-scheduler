@@ -1,6 +1,6 @@
 package com.gsrajeni.appscheduler.ui.screens.dashboard.components
 
-import android.content.Context
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -21,7 +21,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -60,7 +59,7 @@ fun ScheduledAppCard(
                 Text(
                     text = stringResource(R.string.status, app.status), color = when (app.status) {
                         ScheduleStatus.Scheduled -> Color.Blue
-                        ScheduleStatus.Executed -> Color.Green
+                        ScheduleStatus.Executed -> Color.Magenta
                     }
                 )
             }
@@ -82,6 +81,7 @@ fun ScheduledAppCard(
     }
 }
 
+@SuppressLint("SimpleDateFormat")
 fun getFormattedScheduleTime(app: ScheduledApp): String {
     return SimpleDateFormat(Constants.dd_mm_yyyy_hh_mm_a).format(app.dateTime)
 }

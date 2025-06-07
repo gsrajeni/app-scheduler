@@ -6,6 +6,7 @@ import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ServiceInfo
 import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
@@ -35,32 +36,41 @@ class AppLaunchService : Service() {
         val notification = NotificationCompat.Builder(this, Constants.appLaunchChannel)
             .setContentTitle(getString(R.string.app_launch_scheduler)).setContentText(
                 getString(
-                    R.string.launching_app,
-                    packageName
-                ))
-            .setSmallIcon(R.drawable.ic_launcher_foreground)
+                    R.string.launching_app, packageName
+                )
+            ).setSmallIcon(R.drawable.ic_launcher_foreground)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT).build()
-
-        startForeground(1, notification)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            startForeground(
+                appId?.toInt() ?: 0,
+                notification,
+                ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC
+            )
+        } else {
+            startForeground(
+                appId?.toInt() ?: 0, notification
+            )
+        }
 
         packageName?.let {
             appId?.apply {
                 coroutineScope.launch(Dispatchers.IO) {
                     val app = database.scheduleDao().getSchedule(appId)
-                        app.collectLatest {
-                            if (it != null) {
-                                it.status = ScheduleStatus.Executed
-                                database.scheduleDao().log(UpdateLog(
+                    app.collectLatest {
+                        if (it != null) {
+                            it.status = ScheduleStatus.Executed
+                            database.scheduleDao().log(
+                                UpdateLog(
                                     description = getString(
-                                        R.string.executed_schedule_with_name,
-                                        it.name
+                                        R.string.executed_schedule_with_name, it.name
                                     ),
-                                ))
-                                database.scheduleDao().updateSchedule(it)
-                                this.coroutineContext.job.cancel()
-                            }
-
+                                )
+                            )
+                            database.scheduleDao().updateSchedule(it)
+                            this.coroutineContext.job.cancel()
                         }
+
+                    }
                 }
             }
             if (AccessibilityServiceBridge.instance != null) {
@@ -68,18 +78,19 @@ class AppLaunchService : Service() {
                 AccessibilityServiceBridge.instance?.launchApp(packageName)
             } else {
                 if (isAppInForeground(this)) {
+                    //App is in foreground, launch the application.
                     launchApp(it)
                 } else if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
                     // For Android 10 and below, try to launch the app directly
                     // as background activity starts are generally allowed.
                     launchApp(it)
                 } else {
+                    //Accessibility mode is not enabled and app is not in foreground, so show the notification, so that user can tap and launch the app
                     showLaunchNotification(this, packageName)
                 }
             }
+            stopSelf()
         }
-
-        stopSelf()
         return START_NOT_STICKY
     }
 
@@ -104,9 +115,12 @@ private fun showLaunchNotification(context: Context, packageName: String) {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
 
-        val notification = NotificationCompat.Builder(context, "app_launch_channel")
-            .setContentTitle("App Launch Ready").setContentText("Tap to open $packageName")
-            .setSmallIcon(R.drawable.ic_launcher_foreground).setContentIntent(pendingIntent)
+        val notification = NotificationCompat.Builder(context, Constants.appLaunchChannel)
+            .setContentTitle(context.getString(R.string.app_launch_ready)).setContentText(
+                context.getString(
+                    R.string.tap_to_open, packageName
+                )
+            ).setSmallIcon(R.drawable.ic_launcher_foreground).setContentIntent(pendingIntent)
             .setAutoCancel(true).build()
 
         val notificationId = packageName.hashCode()

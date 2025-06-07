@@ -37,4 +37,9 @@
     <string name="app_launch_scheduler">App Launch Scheduler</string>
     <string name="launching_app">Launching app: %1$s</string>
     <string name="executed_schedule_with_name">Executed schedule with name: %1$s</string>
+    <string name="app_launch_ready">App Launch Ready</string>
+    <string name="tap_to_open">Tap to open %1$s</string>
+    <string name="app">App</string>
+    <string name="name_not_found">Name not found</string>
+    <string name="splash_screen">Splash Screen</string>
 </resources>

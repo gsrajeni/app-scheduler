@@ -65,7 +65,7 @@ class DashboardViewModel @Inject constructor(
     }
 
     fun updateAccessiblityShownFlag(bool: Boolean) {
-        sharedPreferenceDataSource.updateAccessiblityPopupShown(bool)
+        sharedPreferenceDataSource.updateAccessibilityPopupShown(bool)
         _isAccessiblityShown.value = bool
     }
 }
