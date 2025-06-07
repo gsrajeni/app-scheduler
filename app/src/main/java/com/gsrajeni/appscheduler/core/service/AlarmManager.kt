@@ -5,7 +5,7 @@ import android.content.Context
 import android.content.Intent
 
 class MyAlarmManager {
-    fun addAlarm(context: Context, packageName: String, id: Long) {
+    fun addAlarm(context: Context, packageName: String, id: Long, triggerTimeMillis: Long) {
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val intent = Intent(context, AppLaunchReceiver::class.java).apply {
             putExtra("packageName", packageName)
@@ -17,7 +17,6 @@ class MyAlarmManager {
             intent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
-        val triggerTimeMillis =  System.currentTimeMillis() + 5000
         alarmManager.setExactAndAllowWhileIdle(
             AlarmManager.RTC_WAKEUP,
             triggerTimeMillis,

@@ -74,8 +74,5 @@ fun ScheduledAppCard(
 }
 
 fun getFormattedScheduleTime(app: ScheduledApp): String {
-    var date = Date(app.date)
-    var calendar = Calendar.getInstance()
-    calendar.set(date.year, date.month, date.date, app.hour, app.minute)
-    return SimpleDateFormat("dd/MM/yyyy\n(hh:mm a)").format(calendar.time)
+    return SimpleDateFormat("dd/MM/yyyy\n(hh:mm a)").format(app.dateTime)
 }

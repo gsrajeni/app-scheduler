@@ -2,6 +2,7 @@ package com.gsrajeni.appscheduler.ui.screens.add_schedule
 
 import android.Manifest
 import android.content.Context
+import android.icu.util.Calendar
 import androidx.annotation.RequiresPermission
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -18,7 +19,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.util.Date
 import javax.inject.Inject
+import kotlin.math.min
 
 @HiltViewModel
 class AddScheduleViewModel @Inject constructor(
@@ -40,13 +43,11 @@ class AddScheduleViewModel @Inject constructor(
     }
 
     @RequiresPermission(Manifest.permission.SCHEDULE_EXACT_ALARM)
-    fun createSchedule(info: AppInfo, date: Long, hour: Int, minute: Int) {
+    fun createSchedule(info: AppInfo, dateTime: Date) {
         val schedule = ScheduledApp(
             name = info.name,
             packageName = info.packageName,
-            date = date,
-            hour = hour,
-            minute = minute,
+            dateTime = dateTime,
             status = ScheduleStatus.Scheduled
         )
         viewModelScope.launch(Dispatchers.IO) {
@@ -56,7 +57,8 @@ class AddScheduleViewModel @Inject constructor(
                     description = "Added new schedule with id: $id",
                 ))
             }
-            alarmManager.addAlarm(appContext, info.packageName, id)
+            val calendar = java.util.Calendar.getInstance()
+            alarmManager.addAlarm(appContext, info.packageName, id, dateTime.time)
             _isScheduleCreated.value = true
         }
     }

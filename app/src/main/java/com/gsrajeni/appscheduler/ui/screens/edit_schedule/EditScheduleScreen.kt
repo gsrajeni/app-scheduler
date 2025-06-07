@@ -48,6 +48,7 @@ import com.gsrajeni.appscheduler.ui.components.AppIconFromPackage
 import com.gsrajeni.appscheduler.ui.components.DefaultAppBar
 import com.gsrajeni.appscheduler.ui.navigation.LocalNavHostController
 import java.util.Calendar
+import java.util.Date
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -167,10 +168,15 @@ fun EditScheduleScreen(modifier: Modifier = Modifier, id: Long?) {
                 modifier = Modifier.padding(top = 24.dp), state = timePickerState
             )
             ElevatedButton(onClick = {
+                val calendar = Calendar.getInstance()
+                datePickerState.selectedDateMillis?.let {
+                    calendar.timeInMillis = it
+                }
+                calendar.set(Calendar.HOUR_OF_DAY, timePickerState.hour)
+                calendar.set(Calendar.MINUTE, timePickerState.minute)
+
                 val newSchedule = mySchedule.value?.copy(
-                    date = datePickerState.selectedDateMillis!!,
-                    hour = timePickerState.hour,
-                    minute = timePickerState.minute
+                    dateTime = Date(calendar.timeInMillis)
                 )
                 viewModel.editSchedule(newSchedule)
             }) {

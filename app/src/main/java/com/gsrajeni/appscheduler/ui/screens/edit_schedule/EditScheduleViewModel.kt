@@ -7,7 +7,6 @@ import com.gsrajeni.appscheduler.core.service.MyAlarmManager
 import com.gsrajeni.appscheduler.data.model.ScheduledApp
 import com.gsrajeni.appscheduler.data.model.UpdateLog
 import com.gsrajeni.appscheduler.data.room.AppDatabase
-import com.gsrajeni.appscheduler.data.sources.InstalledAppDataSource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
@@ -32,10 +31,12 @@ class EditScheduleViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) {
             app?.apply {
                 database.scheduleDao().updateSchedule(app)
-                database.scheduleDao().log(UpdateLog(
-                    description = "Edited schedule with id: ${app.id}",
-                ))
-                alarmManager.addAlarm(appContext, app.packageName, app.id)
+                database.scheduleDao().log(
+                    UpdateLog(
+                        description = "Edited schedule with id: ${app.id}",
+                    )
+                )
+                alarmManager.addAlarm(appContext, app.packageName, app.id, app.dateTime.time)
                 _isScheduleUpdated.value = true
             }
         }

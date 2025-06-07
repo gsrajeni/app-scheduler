@@ -37,6 +37,7 @@ import com.gsrajeni.appscheduler.ui.components.DefaultAppBar
 import com.gsrajeni.appscheduler.ui.navigation.LocalNavHostController
 import com.gsrajeni.appscheduler.ui.screens.add_schedule.components.app_picker.AppPicker
 import java.util.Calendar
+import java.util.Date
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -131,11 +132,15 @@ fun AddScheduleScreen(modifier: Modifier = Modifier) {
                 if (selectedApp != null)
                     ElevatedButton(onClick = {
                         if (isEverythingValid()) {
+                            val calendar = Calendar.getInstance()
+                            datePickerState.selectedDateMillis?.let {
+                                calendar.timeInMillis = it
+                            }
+                            calendar.set(Calendar.HOUR_OF_DAY, timePickerState.hour)
+                            calendar.set(Calendar.MINUTE, timePickerState.minute)
                             viewModel.createSchedule(
                                 selectedApp!!,
-                                datePickerState.selectedDateMillis!!,
-                                timePickerState.hour,
-                                timePickerState.minute
+                                Date(calendar.timeInMillis)
                             )
                         }
                         else{
