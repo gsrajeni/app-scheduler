@@ -17,7 +17,7 @@ class Constants {
         const val IS_ACCESSIBILITY_POPUP_SHOWN = "is_accessibility_popup_shown"
         const val myPrefs = "my_prefs"
         const val dd_mm_yyyy_hh_mm_ss_a = "dd/MM/yyyy hh:mm:ss a"
-        const val dd_mm_yyyy_hh_mm_a = "dd/MM/yyyy\\n(hh:mm a)"
+        const val dd_mm_yyyy_hh_mm_a = "dd/MM/yyyy\n(hh:mm a)"
         const val dd_mm_yyyy = "dd/MM/yyyy"
     }
 }
