@@ -10,6 +10,7 @@ import android.os.Build
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import com.gsrajeni.appscheduler.R
+import com.gsrajeni.appscheduler.data.constants.Constants
 import com.gsrajeni.appscheduler.data.model.ScheduleStatus
 import com.gsrajeni.appscheduler.data.model.UpdateLog
 import com.gsrajeni.appscheduler.data.room.AppDatabase
@@ -29,10 +30,14 @@ class AppLaunchService : Service() {
     @Inject
     lateinit var coroutineScope: CoroutineScope
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        val packageName = intent?.getStringExtra("packageName")
-        val appId: Long? = intent?.getLongExtra("appId", -1L)
-        val notification = NotificationCompat.Builder(this, "app_launch_channel")
-            .setContentTitle("App Launch Scheduler").setContentText("Launching app: $packageName")
+        val packageName = intent?.getStringExtra(Constants.packageName)
+        val appId: Long? = intent?.getLongExtra(Constants.appId, -1L)
+        val notification = NotificationCompat.Builder(this, Constants.appLaunchChannel)
+            .setContentTitle(getString(R.string.app_launch_scheduler)).setContentText(
+                getString(
+                    R.string.launching_app,
+                    packageName
+                ))
             .setSmallIcon(R.drawable.ic_launcher_foreground)
             .setPriority(NotificationCompat.PRIORITY_DEFAULT).build()
 
@@ -46,7 +51,10 @@ class AppLaunchService : Service() {
                             if (it != null) {
                                 it.status = ScheduleStatus.Executed
                                 database.scheduleDao().log(UpdateLog(
-                                    description = "Executed schedule with name: ${it.name}",
+                                    description = getString(
+                                        R.string.executed_schedule_with_name,
+                                        it.name
+                                    ),
                                 ))
                                 database.scheduleDao().updateSchedule(it)
                                 this.coroutineContext.job.cancel()

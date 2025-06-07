@@ -34,4 +34,7 @@
     <string name="edited_schedule_with_name">Edited schedule with name: %1$s</string>
     <string name="schedule_logs">Schedule Logs</string>
     <string name="time">Time: %1$s</string>
+    <string name="app_launch_scheduler">App Launch Scheduler</string>
+    <string name="launching_app">Launching app: %1$s</string>
+    <string name="executed_schedule_with_name">Executed schedule with name: %1$s</string>
 </resources>
