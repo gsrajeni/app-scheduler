@@ -5,6 +5,7 @@ import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
@@ -40,6 +41,7 @@ import com.gsrajeni.appscheduler.ui.components.DefaultAppBar
 import com.gsrajeni.appscheduler.ui.navigation.LocalNavHostController
 import com.gsrajeni.appscheduler.ui.screens.add_schedule.components.app_picker.AppPicker
 import java.util.Calendar
+import java.util.TimeZone
 import java.util.Date
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -47,15 +49,14 @@ import java.util.Date
 fun AddScheduleScreen(modifier: Modifier = Modifier) {
     val viewModel = hiltViewModel<AddScheduleViewModel>()
     var selectedApp: AppInfo? by remember { mutableStateOf(null) }
+    val calendar = Calendar.getInstance(TimeZone.getDefault())
     val datePickerState = rememberDatePickerState(
-        initialSelectedDateMillis = System.currentTimeMillis(),
         selectableDates = object : SelectableDates {
             override fun isSelectableDate(utcTimeMillis: Long): Boolean {
-                return utcTimeMillis >= Calendar.getInstance().timeInMillis
+                return utcTimeMillis >= calendar.timeInMillis
             }
         })
     var showDatePicker by remember { mutableStateOf(false) }
-    val calendar = Calendar.getInstance()
     val timePickerState = rememberTimePickerState(
         initialHour = calendar.get(Calendar.HOUR_OF_DAY),
         initialMinute = calendar.get(Calendar.MINUTE),
@@ -130,7 +131,7 @@ fun AddScheduleScreen(modifier: Modifier = Modifier) {
                 )
                 if (selectedApp != null) ElevatedButton(onClick = {
                     if (isEverythingValid()) {
-                        val calendar = Calendar.getInstance()
+                        val calendar = Calendar.getInstance(TimeZone.getDefault())
                         datePickerState.selectedDateMillis?.let {
                             calendar.timeInMillis = it
                         }

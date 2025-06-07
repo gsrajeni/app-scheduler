@@ -51,6 +51,7 @@ import com.gsrajeni.appscheduler.ui.components.DefaultAppBar
 import com.gsrajeni.appscheduler.ui.navigation.LocalNavHostController
 import java.util.Calendar
 import java.util.Date
+import java.util.TimeZone
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -62,11 +63,11 @@ fun EditScheduleScreen(modifier: Modifier = Modifier, id: Long?) {
         initialSelectedDateMillis = System.currentTimeMillis(),
         selectableDates = object : SelectableDates {
             override fun isSelectableDate(utcTimeMillis: Long): Boolean {
-                return utcTimeMillis >= Calendar.getInstance().timeInMillis
+                return utcTimeMillis >= Calendar.getInstance(TimeZone.getDefault()).timeInMillis
             }
         })
     var showDatePicker by remember { mutableStateOf(false) }
-    val calendar = Calendar.getInstance()
+    val calendar = Calendar.getInstance(TimeZone.getDefault())
     val timePickerState = rememberTimePickerState(
         initialHour = calendar.get(Calendar.HOUR_OF_DAY),
         initialMinute = calendar.get(Calendar.MINUTE),
@@ -173,7 +174,7 @@ fun EditScheduleScreen(modifier: Modifier = Modifier, id: Long?) {
                 modifier = Modifier.padding(top = 24.dp), state = timePickerState
             )
             ElevatedButton(onClick = {
-                val calendar = Calendar.getInstance()
+                val calendar = Calendar.getInstance(TimeZone.getDefault())
                 datePickerState.selectedDateMillis?.let {
                     calendar.timeInMillis = it
                 }
