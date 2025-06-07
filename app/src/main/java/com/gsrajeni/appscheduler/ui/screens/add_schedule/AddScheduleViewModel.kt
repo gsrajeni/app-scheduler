@@ -1,8 +1,11 @@
 package com.gsrajeni.appscheduler.ui.screens.add_schedule
 
+import android.Manifest
 import android.content.Context
+import androidx.annotation.RequiresPermission
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.gsrajeni.appscheduler.core.service.MyAlarmManager
 import com.gsrajeni.appscheduler.data.model.AppInfo
 import com.gsrajeni.appscheduler.data.model.ScheduleStatus
 import com.gsrajeni.appscheduler.data.model.ScheduledApp
@@ -34,7 +37,9 @@ class AddScheduleViewModel @Inject constructor(
         _installedAppList.value = installedAppDataSource.getInstalledApps(appContext)
     }
 
+    @RequiresPermission(Manifest.permission.SCHEDULE_EXACT_ALARM)
     fun createSchedule(info: AppInfo, date: Long, hour: Int, minute: Int) {
+        MyAlarmManager().addAlarm(appContext, info.packageName)
         val schedule = ScheduledApp(
             name = info.name,
             packageName = info.packageName,

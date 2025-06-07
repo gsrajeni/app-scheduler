@@ -1,0 +1,88 @@
+package com.gsrajeni.appscheduler.core.service
+
+import android.app.ActivityManager
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.app.Service
+import android.content.Context
+import android.content.Intent
+import android.os.Build
+import android.os.IBinder
+import android.util.Log
+import androidx.core.app.NotificationCompat
+import com.gsrajeni.appscheduler.R
+
+class AppLaunchService : Service() {
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        val packageName = intent?.getStringExtra("packageName")
+        val notification = NotificationCompat.Builder(this, "app_launch_channel")
+            .setContentTitle("App Launch Scheduler").setContentText("Launching app: $packageName")
+            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT).build()
+
+        startForeground(1, notification)
+
+        packageName?.let {
+            if (AccessibilityServiceBridge.instance != null) {
+                //If accessibility service is avaiable, then try to run the app with that service
+                AccessibilityServiceBridge.instance?.launchApp(packageName)
+            } else {
+                if (isAppInForeground(this)) {
+                    launchApp(it)
+                } else if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.Q) {
+                    // For Android 10 and below, try to launch the app directly
+                    // as background activity starts are generally allowed.
+                    launchApp(it)
+                } else {
+                    showLaunchNotification(this, packageName)
+                }
+            }
+        }
+
+        stopSelf()
+        return START_NOT_STICKY
+    }
+
+    private fun launchApp(packageName: String) {
+        val launchIntent = packageManager.getLaunchIntentForPackage(packageName)
+        if (launchIntent != null) {
+            launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(launchIntent)
+        } else {
+            Log.e("AppLaunchService", "Cannot launch app: $packageName")
+        }
+    }
+
+    override fun onBind(intent: Intent?): IBinder? = null
+}
+
+private fun showLaunchNotification(context: Context, packageName: String) {
+    val launchIntent = context.packageManager.getLaunchIntentForPackage(packageName)
+    if (launchIntent != null) {
+        val pendingIntent = PendingIntent.getActivity(
+            context.applicationContext,
+            0,
+            launchIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
+        val notification = NotificationCompat.Builder(context, "app_launch_channel")
+            .setContentTitle("App Launch Ready").setContentText("Tap to open $packageName")
+            .setSmallIcon(R.drawable.ic_launcher_foreground).setContentIntent(pendingIntent)
+            .setAutoCancel(true).build()
+
+        val notificationId = packageName.hashCode()
+        val notificationManager =
+            context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager.notify(notificationId, notification)
+    }
+}
+
+private fun isAppInForeground(context: Context): Boolean {
+    val activityManager = context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+    val appProcesses = activityManager.runningAppProcesses ?: return false
+    val packageName = context.packageName
+    return appProcesses.any {
+        it.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND && it.processName == packageName
+    }
+}

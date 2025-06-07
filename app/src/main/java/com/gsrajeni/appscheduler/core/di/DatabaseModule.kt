@@ -3,6 +3,7 @@ package com.gsrajeni.appscheduler.core.di
 import android.content.Context
 import androidx.room.Room
 import com.gsrajeni.appscheduler.data.room.AppDatabase
+import com.gsrajeni.appscheduler.data.sources.SharedPreferenceDataSource
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -15,9 +16,13 @@ class DatabaseModule {
     @Provides
     fun getRoomDatabase(@ApplicationContext context: Context): AppDatabase {
         val room = Room.databaseBuilder(
-            context,
-            AppDatabase::class.java, "schedule-database"
+            context, AppDatabase::class.java, "schedule-database"
         ).build()
-        return  room
+        return room
+    }
+
+    @Provides
+    fun provideSharedPreferences(@ApplicationContext context: Context): SharedPreferenceDataSource {
+        return SharedPreferenceDataSource(context)
     }
 }

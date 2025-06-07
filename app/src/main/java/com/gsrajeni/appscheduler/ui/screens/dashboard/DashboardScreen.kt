@@ -1,6 +1,8 @@
 package com.gsrajeni.appscheduler.ui.screens.dashboard
 
 import AppRoute
+import android.content.Intent
+import android.provider.Settings
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -23,6 +25,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -42,6 +45,8 @@ fun DashboardScreen(
         viewModel.scheduledItems.collectAsStateWithLifecycle(initialValue = listOf())
     val navController = LocalNavHostController.current
     var scheduleToDelete: ScheduledApp? by remember { mutableStateOf(null) }
+    val isAccessiblityShown by viewModel.isAccessiblityShown.collectAsStateWithLifecycle()
+    val context = LocalContext.current
     Scaffold(topBar = {
         DefaultAppBar(
             title = "App Scheduler", actions = {
@@ -67,7 +72,9 @@ fun DashboardScreen(
                 .fillMaxSize(), contentAlignment = Alignment.Center
         ) {
             if (scheduledAppList.value.isEmpty()) EmptyContent(modifier = Modifier.wrapContentSize())
-            else LazyColumn(modifier = Modifier.fillMaxSize(), contentPadding = PaddingValues(bottom = 64.dp)) {
+            else LazyColumn(
+                modifier = Modifier.fillMaxSize(), contentPadding = PaddingValues(bottom = 64.dp)
+            ) {
 
                 items(scheduledAppList.value.size) { index ->
                     ScheduledAppCard(scheduledAppList.value[index], onEditClick = {
@@ -95,5 +102,26 @@ fun DashboardScreen(
                     scheduleToDelete = null
                 })
         }
+
+        if (!isAccessiblityShown) {
+            DefaultConfirmationDialog(
+                title = "Permission Required?",
+                message = "Please enable accessibility access for this app to allow background app launching. Otherwise your app will not be able to open other app when it will be in background.",
+                confirmTitle = "Open Settings",
+                cancelTitle = "Cancel",
+                onDismiss = {
+                    viewModel.updateAccessiblityShownFlag(true)
+                },
+                onConfirm = {
+                    viewModel.updateAccessiblityShownFlag(true)
+                    val intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
+                    context.startActivity(intent)
+                    viewModel.updateAccessiblityShownFlag(true)
+                },
+                onCancel = {
+                    viewModel.updateAccessiblityShownFlag(true)
+                })
+        }
+
     }
 }

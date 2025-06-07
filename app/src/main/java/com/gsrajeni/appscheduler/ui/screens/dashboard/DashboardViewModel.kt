@@ -2,13 +2,14 @@ package com.gsrajeni.appscheduler.ui.screens.dashboard
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gsrajeni.appscheduler.data.model.ScheduleStatus
 import com.gsrajeni.appscheduler.data.model.ScheduledApp
 import com.gsrajeni.appscheduler.data.room.AppDatabase
+import com.gsrajeni.appscheduler.data.sources.SharedPreferenceDataSource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -16,10 +17,14 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DashboardViewModel @Inject constructor(
-    private val database: AppDatabase
+    private val database: AppDatabase,
+    private val sharedPreferenceDataSource: SharedPreferenceDataSource
 ) : ViewModel() {
     private val _scheduledApps = MutableStateFlow<List<ScheduledApp>>(emptyList())
     val scheduledItems: Flow<List<ScheduledApp>> = database.scheduleDao().getAll()
+    val _isAccessiblityShown =
+        MutableStateFlow<Boolean>(sharedPreferenceDataSource.isAccessibilityPopupShown)
+    val isAccessiblityShown = _isAccessiblityShown.asStateFlow()
 
     init {
         loadMockData()
@@ -48,5 +53,10 @@ class DashboardViewModel @Inject constructor(
                 database.scheduleDao().delete(app)
             }
         }
+    }
+
+    fun updateAccessiblityShownFlag(bool: Boolean) {
+        sharedPreferenceDataSource.updateAccessiblityPopupShown(bool)
+        _isAccessiblityShown.value = bool
     }
 }
