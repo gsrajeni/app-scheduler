@@ -33,7 +33,7 @@ class EditScheduleViewModel @Inject constructor(
                 database.scheduleDao().updateSchedule(app)
                 database.scheduleDao().log(
                     UpdateLog(
-                        description = "Edited schedule with id: ${app.id}",
+                        description = "Edited schedule with name: ${app.name}",
                     )
                 )
                 alarmManager.addAlarm(appContext, app.packageName, app.id, app.dateTime.time)

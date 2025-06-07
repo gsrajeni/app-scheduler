@@ -54,7 +54,7 @@ fun ScheduledAppCard(
                 Text(
                     text = "Status: ${app.status}", color = when (app.status) {
                         ScheduleStatus.Scheduled -> Color.Blue
-                        ScheduleStatus.Executed -> Color.Blue
+                        ScheduleStatus.Executed -> Color.Green
                     }
                 )
             }

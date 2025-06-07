@@ -58,7 +58,7 @@ class DashboardViewModel @Inject constructor(
             viewModelScope.launch(Dispatchers.IO) {
                 database.scheduleDao().delete(app)
                 database.scheduleDao().log(UpdateLog(
-                    description = "Deleted schedule with id: ${app.id}",
+                    description = "Deleted schedule with name: ${app.name}",
                 ))
                 alarmManager.deleteAlarm(context, app.packageName, app.id)
             }

@@ -1,41 +1,88 @@
 package com.gsrajeni.appscheduler
 
 import AppNavigationGraph
+import android.Manifest
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.runtime.mutableStateOf
+import androidx.core.content.ContextCompat
 import androidx.navigation.compose.rememberNavController
+import com.gsrajeni.appscheduler.ui.components.DefaultConfirmationDialog
 import com.gsrajeni.appscheduler.ui.navigation.LocalNavHostController
 import com.gsrajeni.appscheduler.ui.theme.AppSchedulerTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    private val showNotificationPermissionDialog = mutableStateOf(false)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             createNotificationChannel()
         }
+        getPermissionForNotification()
         enableEdgeToEdge()
         setContent {
-            val navController = rememberNavController()
-            CompositionLocalProvider(
-                LocalNavHostController provides navController,
-            ) {
-                AppSchedulerTheme {
+            AppSchedulerTheme {
+                val navController = rememberNavController()
+                CompositionLocalProvider(
+                    LocalNavHostController provides navController,
+                ) {
                     AppNavigationGraph()
-                }
+                    if (showNotificationPermissionDialog.value) {
+                        DefaultConfirmationDialog(
+                            title = "Notification Permission Required",
+                            message = "This app requires notification permission to function properly. Please enable it in settings.",
+                            confirmTitle = "Open Settings",
+                            cancelTitle = null,
+                            onConfirm = {
+                                showNotificationPermissionDialog.value = false
+                                val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS)
+                                val uri = Uri.fromParts("package", packageName, null)
+                                intent.data = uri
+                                startActivity(intent)
+                            },
+                            onCancel = null,
+                            onDismiss = {})
 
+                    }
+                }
+            }
+        }
+    }
+
+
+    private fun getPermissionForNotification() {
+        val requestPermissionLauncher = registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { isGranted: Boolean ->
+            if (!isGranted) {
+                showNotificationPermissionDialog.value = true
+            }
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(
+                    this, Manifest.permission.POST_NOTIFICATIONS
+                ) == PackageManager.PERMISSION_GRANTED
+            ) {
+                // Nothing to do, permission is granted
+            } else {
+                // Request for the permission
+                requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
             }
         }
     }
@@ -43,9 +90,7 @@ class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.O)
     private fun createNotificationChannel() {
         val channel = NotificationChannel(
-            "app_launch_channel",
-            "App Launch Service",
-            NotificationManager.IMPORTANCE_LOW
+            "app_launch_channel", "App Launch Service", NotificationManager.IMPORTANCE_LOW
         )
         val manager = getSystemService(NotificationManager::class.java)
         manager.createNotificationChannel(channel)

@@ -46,7 +46,7 @@ class AppLaunchService : Service() {
                             if (it != null) {
                                 it.status = ScheduleStatus.Executed
                                 database.scheduleDao().log(UpdateLog(
-                                    description = "Executed schedule with id: $appId",
+                                    description = "Executed schedule with name: ${it.name}",
                                 ))
                                 database.scheduleDao().updateSchedule(it)
                                 this.coroutineContext.job.cancel()

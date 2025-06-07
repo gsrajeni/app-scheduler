@@ -12,29 +12,28 @@ fun DefaultConfirmationDialog(
     title: String,
     message: String,
     confirmTitle: String,
-    cancelTitle: String,
-    onDismiss: (() -> Unit)? = null, onConfirm: () -> Unit, onCancel: () -> Unit
+    cancelTitle: String?,
+    onDismiss: (() -> Unit)? = null,
+    onConfirm: () -> Unit,
+    onCancel: (() -> Unit)?
 ) {
-    AlertDialog(
-        modifier = modifier,
-        onDismissRequest = {
-            onDismiss?.invoke() ?: onCancel.invoke()
-        },
-        title = { Text(title) },
-        text = { Text(message) },
-        confirmButton = {
-            TextButton(onClick = {
-                onConfirm.invoke()
-            }) {
-                Text(confirmTitle)
-            }
-        },
-        dismissButton = {
+    AlertDialog(modifier = modifier, onDismissRequest = {
+        onDismiss?.invoke() ?: onCancel?.invoke()
+    }, title = { Text(title) }, text = { Text(message) }, confirmButton = {
+        TextButton(onClick = {
+            onConfirm.invoke()
+        }) {
+            Text(confirmTitle)
+        }
+    }, dismissButton = {
+        if (onCancel != null) {
             TextButton(onClick = {
                 onCancel.invoke()
             }) {
-                Text(cancelTitle)
+                cancelTitle?.let {
+                    Text(it)
+                }
             }
         }
-    )
+    })
 }

@@ -54,7 +54,7 @@ class AddScheduleViewModel @Inject constructor(
             val id = database.scheduleDao().insert(app = schedule)
             if(id != -1L){
                 database.scheduleDao().log(UpdateLog(
-                    description = "Added new schedule with id: $id",
+                    description = "Added new schedule with name: ${schedule.name}",
                 ))
             }
             val calendar = java.util.Calendar.getInstance()
