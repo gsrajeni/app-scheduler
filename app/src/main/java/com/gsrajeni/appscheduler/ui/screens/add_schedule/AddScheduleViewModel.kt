@@ -23,6 +23,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AddScheduleViewModel @Inject constructor(
     @ApplicationContext val appContext: Context,
+    private val alarmManager: MyAlarmManager,
     private val database: AppDatabase,
     private val installedAppDataSource: InstalledAppDataSource
 ) : ViewModel() {
@@ -55,7 +56,7 @@ class AddScheduleViewModel @Inject constructor(
                     description = "Added new schedule with id: $id",
                 ))
             }
-            MyAlarmManager().addAlarm(appContext, info.packageName, id)
+            alarmManager.addAlarm(appContext, info.packageName, id)
             _isScheduleCreated.value = true
         }
     }

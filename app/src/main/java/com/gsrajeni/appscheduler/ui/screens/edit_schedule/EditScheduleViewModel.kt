@@ -3,6 +3,7 @@ package com.gsrajeni.appscheduler.ui.screens.edit_schedule
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.gsrajeni.appscheduler.core.service.MyAlarmManager
 import com.gsrajeni.appscheduler.data.model.ScheduledApp
 import com.gsrajeni.appscheduler.data.model.UpdateLog
 import com.gsrajeni.appscheduler.data.room.AppDatabase
@@ -20,7 +21,7 @@ import javax.inject.Inject
 class EditScheduleViewModel @Inject constructor(
     @ApplicationContext val appContext: Context,
     private val database: AppDatabase,
-    private val installedAppDataSource: InstalledAppDataSource
+    private val alarmManager: MyAlarmManager
 ) : ViewModel() {
     val _isScheduleUpdated = MutableStateFlow(false)
     var isScheduleUpdated = _isScheduleUpdated.asStateFlow()
@@ -34,6 +35,7 @@ class EditScheduleViewModel @Inject constructor(
                 database.scheduleDao().log(UpdateLog(
                     description = "Edited schedule with id: ${app.id}",
                 ))
+                alarmManager.addAlarm(appContext, app.packageName, app.id)
                 _isScheduleUpdated.value = true
             }
         }

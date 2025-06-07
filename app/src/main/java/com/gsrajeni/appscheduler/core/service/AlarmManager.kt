@@ -11,10 +11,9 @@ class MyAlarmManager {
             putExtra("packageName", packageName)
             putExtra("appId", id)
         }
-        val requestCode = packageName.hashCode()
         val pendingIntent = PendingIntent.getBroadcast(
             context,
-            requestCode.toInt(),
+            id.toInt(),
             intent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
@@ -22,6 +21,22 @@ class MyAlarmManager {
         alarmManager.setExactAndAllowWhileIdle(
             AlarmManager.RTC_WAKEUP,
             triggerTimeMillis,
+            pendingIntent
+        )
+    }
+    fun deleteAlarm(context: Context, packageName: String, id: Long) {
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val intent = Intent(context, AppLaunchReceiver::class.java).apply {
+            putExtra("packageName", packageName)
+            putExtra("appId", id)
+        }
+        val pendingIntent = PendingIntent.getBroadcast(
+            context,
+            id.toInt(),
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        alarmManager.cancel(
             pendingIntent
         )
     }

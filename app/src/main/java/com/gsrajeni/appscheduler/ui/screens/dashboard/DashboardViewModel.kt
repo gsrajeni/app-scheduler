@@ -1,12 +1,15 @@
 package com.gsrajeni.appscheduler.ui.screens.dashboard
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.gsrajeni.appscheduler.core.service.MyAlarmManager
 import com.gsrajeni.appscheduler.data.model.ScheduledApp
 import com.gsrajeni.appscheduler.data.model.UpdateLog
 import com.gsrajeni.appscheduler.data.room.AppDatabase
 import com.gsrajeni.appscheduler.data.sources.SharedPreferenceDataSource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,6 +22,8 @@ import javax.inject.Inject
 @HiltViewModel
 class DashboardViewModel @Inject constructor(
     private val database: AppDatabase,
+    private val alarmManager: MyAlarmManager,
+    @ApplicationContext val context: Context,
     private val sharedPreferenceDataSource: SharedPreferenceDataSource
 ) : ViewModel() {
     private val _scheduledApps = MutableStateFlow<List<ScheduledApp>>(emptyList())
@@ -55,6 +60,7 @@ class DashboardViewModel @Inject constructor(
                 database.scheduleDao().log(UpdateLog(
                     description = "Deleted schedule with id: ${app.id}",
                 ))
+                alarmManager.deleteAlarm(context, app.packageName, app.id)
             }
         }
     }
