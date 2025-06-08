@@ -29,7 +29,7 @@ fun SplashScreen(modifier: Modifier = Modifier) {
     val navController = LocalNavHostController.current
     LaunchedEffect(Unit) {
         scope.launch {
-            delay(2000)
+            delay(500)
             navController?.navigate(AppRoute.DashboardRoute) {
                 popUpTo(0)
             }
