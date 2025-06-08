@@ -63,7 +63,7 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.androidx.hilt.navigation.compose)
     // Hilt Dependencies
-    implementation(libs.hilt.android) // Use the same version as the plugin
+    implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
     implementation(libs.coil.compose)
     implementation(libs.androidx.room.runtime)
